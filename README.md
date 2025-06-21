@@ -94,10 +94,3 @@ Make sure to configure SMTP credentials in n8n if using email functionality.
 
 ---
 
-## License & Use
-
-This project is strictly for evaluation purposes. All intellectual property belongs to the developer. Soft-Nerve has no commercial intent or usage.
-
-## Deadline
-
-- **Target Deadline**: 22 June 2025
