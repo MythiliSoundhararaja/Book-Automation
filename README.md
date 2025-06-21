@@ -1,45 +1,103 @@
 # Automated Book Publication Workflow
 
-This project demonstrates a full workflow automation pipeline for AI-powered book chapter processing and publishing. It includes web scraping, AI rewriting, human-in-the-loop review, and version-controlled storage using ChromaDB.
+This project builds an automated workflow for fetching book chapters from the web, rewriting them using AI, and managing versions with human review and ChromaDB integration. It is built using Docker, FastAPI, Playwright, and n8n for orchestrating the workflow.
 
-## Overview
+## Features
 
-The workflow is designed to automate the following:
-
-1. **Scraping & Screenshots**: Extracts content and captures screenshots from target URLs using Playwright and FastAPI.
-2. **AI Writing & Review**: Uses LLMs (e.g., Gemini or OpenAI) to rewrite chapters while preserving original story elements.
-3. **Human-in-the-Loop**: Sends rewritten content to human reviewers via email or Notion, enabling editing and approval before finalization.
-4. **Agentic API**: Integrates AI agents using n8n to manage prompt flow, revisions, and content decisions.
-5. **ChromaDB Storage**: Final content is stored in ChromaDB for versioning and intelligent RL-based search.
-6. **RL Search Workflow**: Implements retrieval of stored chapters based on vector similarity, enabling reinforcement-style interactions.
+- Scraping: Fetch chapter text and screenshot using Playwright
+- AI Writing: Rewrite story using an LLM (e.g., Gemini)
+- Human Review: Integrate manual approval via Notion and email
+- Storage: Store final version in ChromaDB
+- Search: Use a keyword to retrieve the best-matching rewritten story from ChromaDB
+- Version Control: RL-style feedback loop with search consistency
 
 ---
 
-## Technologies Used
-
-- **Python** (FastAPI, Playwright, BeautifulSoup)
-- **n8n** (for orchestrating the workflow)
-- **ChromaDB** (for vector storage and semantic search)
-- **Notion API** (for human review and editing)
-- **Docker** (for isolated deployment)
-- **LLMs** (Gemini or OpenAI for AI Agents)
-- **SQLite** (optional default database for n8n)
-
-
 ## Folder Structure
 
-- `code/` – Contains Python backend (`main.py`, `scrape_script.py`, `requirements.txt`, etc.)
-- `workflows/` – Contains exported `.json` of the n8n workflow and screenshots of nodes.
-- `video/` – Contains the recorded walkthrough or demo video.
-- `.gitignore` – Prevents unnecessary files from being tracked.
+```
+automated-book-workflow/
+│
+├── scripts/
+│   ├── main.py                # FastAPI backend
+│   ├── scrape_script.py       # Web scraper and screenshot logic
+│   ├── requirements.txt
+│   └── Dockerfile             # Dockerfile for scraper service
+│
+├── Dockerfile.n8n             # Custom Dockerfile for n8n patching
+├── docker-compose.yml         # Launches scraper and n8n services
+│
+├── workflows/
+│   ├── My_workflow.json       # Exported workflow from n8n
+│   └── screenshots/
+│       └── workflow.png       # Screenshot of the workflow
+│
+└── README.md                  # Project documentation
+```
 
+---
 
-
-## Setup Instructions
+## Getting Started
 
 ### 1. Clone the Repository
 
 ```bash
-git clone https://github.com/your-username/automated-book-publication.git
-cd automated-book-publication
+git clone https://github.com/your-username/automated-book-workflow.git
+cd automated-book-workflow
+```
 
+### 2. Run the Application
+
+Ensure Docker is installed and running.
+
+```bash
+docker-compose up --build
+```
+
+This command will launch:
+
+- FastAPI backend (scraper + ChromaDB interface) on port `8000`
+- n8n workflow editor on port `5678`
+
+---
+
+## Access the Services
+
+- **n8n Editor UI**: [http://localhost:5678](http://localhost:5678)
+- **Scraping API**: `GET http://localhost:8000/scrape?url=<chapter_url>`
+- **Screenshot**: `GET http://localhost:8000/screenshot`
+- **ChromaDB Insertion**: `POST http://localhost:8000/add-to-chroma`
+- **ChromaDB Search**: `GET http://localhost:8000/search?query=keyword`
+
+---
+
+## Notion & Email Integration
+
+- Notion API is used to log rewritten content for manual human approval
+- Email is sent with approval link using `Send Email` node in n8n
+- Upon approval, content is POSTed to `/add-to-chroma`
+
+---
+
+## Environment Configuration
+
+In `docker-compose.yml`, the following variables are set:
+
+```yaml
+N8N_DATABASE_TYPE=sqlite
+N8N_BASIC_AUTH_ACTIVE=true
+N8N_BASIC_AUTH_USER=myth_S
+N8N_BASIC_AUTH_PASSWORD=xxxxxx
+```
+
+Make sure to configure SMTP credentials in n8n if using email functionality.
+
+---
+
+## License & Use
+
+This project is strictly for evaluation purposes. All intellectual property belongs to the developer. Soft-Nerve has no commercial intent or usage.
+
+## Deadline
+
+- **Target Deadline**: 22 June 2025
