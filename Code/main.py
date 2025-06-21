@@ -7,7 +7,6 @@ import uuid
 
 app = FastAPI()
 
-# Existing scraping route
 @app.get("/scrape")
 def scrape(url: str = Query(...)):
     result = scrape_chapter(url)
@@ -17,7 +16,6 @@ def scrape(url: str = Query(...)):
 def get_screenshot():
     return FileResponse("chapter1.png", media_type="image/png")
 
-# ---------- NEW: Add to ChromaDB ----------
 client = chromadb.Client()
 collection = client.get_or_create_collection("rewritten_stories")
 
@@ -55,32 +53,3 @@ def search_content(query: str):
         return {"error": str(e)}
 
 
-# from fastapi import FastAPI, Query
-# from fastapi.responses import FileResponse
-# from scrape_script import scrape_chapter
-
-# app = FastAPI()
-
-# @app.get("/scrape")
-# def scrape(url: str = Query(...)):
-#     result = scrape_chapter(url)
-#     return result
-
-# @app.get("/screenshot")
-# def get_screenshot():
-#     return FileResponse("chaptertesting.png", media_type="image/png")
-
-
-# from fastapi import FastAPI
-# from scrape_script import scrape_chapter
-# import uvicorn
-
-# app = FastAPI()
-
-# @app.get("/scrape")
-# def scrape():
-#     result = scrape_chapter()  # No URL parameter since it's hardcoded in script.py
-#     return result
-
-# if __name__ == "__main__":
-#     uvicorn.run(app, host="0.0.0.0", port=8000)
