@@ -1,6 +1,5 @@
 FROM python:3.11
 
-# Add system dependencies for Playwright headless browser
 RUN apt-get update && apt-get install -y \
     wget \
     libnss3 \
@@ -30,20 +29,15 @@ RUN apt-get update && apt-get install -y \
     libcairo-gobject2 \
     && rm -rf /var/lib/apt/lists/*
 
-# Install Python dependencies
 COPY requirements.txt .
 RUN pip install -r requirements.txt
 
-# Install Playwright and its browsers
-#RUN pip install playwright && playwright install --with-deps
 
 RUN pip install playwright && \
     for i in 1 2 3; do playwright install --with-deps && break || sleep 5; done
 
 
-# Copy your scripts
 COPY . /scripts
 WORKDIR /scripts
 
-# Start FastAPI
 CMD ["uvicorn", "main:app", "--host", "0.0.0.0", "--port", "8000"]
