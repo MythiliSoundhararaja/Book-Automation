@@ -79,6 +79,33 @@ This command will launch:
 
 ---
 
+## ChromaDB Integration
+
+ChromaDB is used for semantic storage and retrieval of approved chapter content.
+
+### 📦 Storage
+Once a chapter is approved by a human reviewer, it is automatically stored in ChromaDB using a POST request to `/add-to-chroma`. The stored content includes:
+
+- `title`: The chapter title
+- `content`: The rewritten story (max 2000 characters)
+- `notion_url`: The Notion page where the editor reviewed it
+-  `screen_shot`: The Screenshot of the Website page
+
+### 🔍 Retrieval
+Search queries are sent to `/search?query=<keyword>`, which returns the most relevant chapters based on vector similarity.
+
+### 🧾 Metadata
+Each ChromaDB entry stores associated metadata:
+- `title`
+- `notion_url`
+- `content`
+
+This enables organized retrieval and traceability of chapter versions.
+
+### ♻️ RL-style Feedback Loop
+The workflow supports future extension into reinforcement learning-style feedback loops. Editors can give feedback on retrieved results, which can be used to refine search behavior and rewriting performance over time.
+
+
 ## Environment Configuration
 
 In `docker-compose.yml`, the following variables are set:
